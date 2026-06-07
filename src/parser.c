@@ -1,4 +1,4 @@
-#include "parser.h" // NOTE: this or ../include/parser.h ?
+#include "parser.h"
 #include <ctype.h>
 #include <err.h>
 #include <stddef.h>
@@ -11,8 +11,6 @@ int parse(char *lineptr, char *tokens[])
 {
     char word[BUFSIZ];
     int i = 0;
-    int start = 0;
-    int temp;
     char c;
 
     // TODO: is BUFSIZ correct way?
@@ -21,17 +19,14 @@ int parse(char *lineptr, char *tokens[])
         char *token = malloc((BUFSIZ + 1) * sizeof(char));
 
         if (token == NULL)
-            err(EXIT_FAILURE, "malloc"); // should this return -1 like getword
+            return -1;
 
         strlcpy(token, word, BUFSIZ);
 
-        tokens[i++] = token; // TODO: Add error handling
-        start = temp;
+        tokens[i++] = token;
     }
 
-    // TODO: Check for a way to know the tokens have ended
-
-    return 1; // TODO: Is this what it should return?
+    return 1;
 }
 
 /* writes the first word of a given line into char *word and replaces the read
