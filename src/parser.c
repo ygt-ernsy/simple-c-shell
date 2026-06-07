@@ -34,6 +34,8 @@ int parse(char *lineptr, char *tokens[])
     return 1; // TODO: Is this what it should return?
 }
 
+/* writes the first word of a given line into char *word and replaces the read
+ * section of the line with blank */
 static int getword(char *word, char *lineptr, int lim)
 {
     char *c = lineptr;
