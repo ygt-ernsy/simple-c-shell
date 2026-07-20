@@ -6,21 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// NOTE: The implementation here is ought to cause problems later
-// the parser should be able to differantiate different commands
-// and be able to do that even when there isn't a ' ' between a
-// command and a '|', example: command1|command2
-// so I need to not only account for possible connectors between commands
-// but also find some way to relay that so it can be handled
-//
-// TODO: How should the parsing be handled? Would a command be parsed, if so
-// will this be a 2 dimentional array containing strings? Won't that be too
-// complex?
-// How will I handle multple command chains? Will here be a limit?
-//
-// NOTE: Some ideas:
-// a function that relays the connector symbol or returns a -1 or smth
-
 /* parses a given line and puts the individual words into a given char* array */
 int parse(char *cmd, char *tokens[])
 {
