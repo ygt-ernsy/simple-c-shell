@@ -37,19 +37,72 @@ int parse(char *cmd, char *tokens[])
             return -1;
 
         strlcpy(token, word, BUFSIZ);
-
         tokens[i++] = token;
     }
 
     return 1;
 }
 
+/* takes a cmd with pipes and splits it to commands and puts them into char*
+ * cmds[], returns the number of cmds or -1 when something goes wrong */
+int split_pipe_cmd(char *pipe_cmd, char *cmds[])
+// TODO: find a better name
+{
+    int p = check_for_pipe(pipe_cmd); // get the first pipe location
+    char c[BUFSIZ];
+    int index = 0;
+
+    while (p > 0)
+    {
+        // skip spaces
+        while (isspace(*pipe_cmd))
+            pipe_cmd++;
+
+        // get the command
+        int i = 0;
+        for (; i < p; i++)
+            c[i] = *pipe_cmd++;
+        // make c null terminated
+        c[i + 1] = '\0';
+
+        // p is 1 bigger than the length of cmd
+        char *cmd = malloc(p * sizeof(char));
+        if (cmd == NULL)
+            return -1;
+
+        strlcpy(cmd, c, BUFSIZ);
+        cmds[index++] = cmd; // TODO: how can I handle index out of bounds?
+
+        // clearning c so it can be used again
+        memset(c, '\0', sizeof(c));
+
+        p = check_for_pipe(pipe_cmd);
+    }
+
+    while (isspace(*pipe_cmd))
+        pipe_cmd++;
+
+    for (int i = 0; *pipe_cmd != '\0' && *pipe_cmd != '\n'; i++)
+    {
+        c[i] = *pipe_cmd++;
+    }
+
+    *pipe_cmd = '\0';
+
+    char *cmd = malloc(BUFSIZ * sizeof(char));
+    strlcpy(cmd, c, BUFSIZ);
+    cmds[index++] = cmd;
+
+    // clear for good measure ?
+    // on subsocuent uses I encountered issue that were fixed with this line
+    memset(c, '\0', sizeof(c));
+
+    return index;
+}
+
 /* writes the first word of a given line into char *word and replaces the read
  * section of the line with blank */
 static int getword(char *word, char *cmd, int lim)
-// TODO:
-// I can modify this to detect | and take them as seperate tokens but
-// I would need a buffer system for that I think
 {
     char *c = cmd;
     int i = 0;
@@ -80,20 +133,25 @@ static int getword(char *word, char *cmd, int lim)
     return word[0];
 }
 
-/* returns the position of '|', -1 if not present */
+/* returns the position of the first '|', -1 if not present */
 int check_for_pipe(char *cmd)
 {
     char *c = cmd;
     int i;
 
     if (cmd == NULL)
+    {
         return -1;
+    }
 
-    for (i = 0; *(c + i) != '|' && i < strlen(cmd); i++)
+    for (i = 0; *c != '|' && i < strlen(cmd); c++, i++)
         ;
 
     if (*c == '|')
+    {
+        *c = ' ';
         return i;
+    }
 
     return -1;
 }

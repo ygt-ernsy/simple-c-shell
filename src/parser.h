@@ -5,5 +5,6 @@
 int parse(char *cmd, char *tokens[]);
 static int getword(char *word, char *cmd, int lim);
 static int check_for_pipe(char *cmd);
+int split_pipe_cmd(char *pipe_cmd, char *cmds[]);
 
 #endif
