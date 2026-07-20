@@ -6,15 +6,30 @@
 #include <stdlib.h>
 #include <string.h>
 
+// NOTE: The implementation here is ought to cause problems later
+// the parser should be able to differantiate different commands
+// and be able to do that even when there isn't a ' ' between a
+// command and a '|', example: command1|command2
+// so I need to not only account for possible connectors between commands
+// but also find some way to relay that so it can be handled
+//
+// TODO: How should the parsing be handled? Would a command be parsed, if so
+// will this be a 2 dimentional array containing strings? Won't that be too
+// complex?
+// How will I handle multple command chains? Will here be a limit?
+//
+// NOTE: Some ideas:
+// a function that relays the connector symbol or returns a -1 or smth
+
 /* parses a given line and puts the individual words into a given char* array */
-int parse(char *lineptr, char *tokens[])
+int parse(char *cmd, char *tokens[])
 {
     char word[BUFSIZ];
     int i = 0;
     char c;
 
     // TODO: is BUFSIZ correct way?
-    while (getword(word, lineptr, BUFSIZ) >= 0)
+    while (getword(word, cmd, BUFSIZ) >= 0)
     {
         char *token = malloc((BUFSIZ + 1) * sizeof(char));
 
@@ -31,12 +46,15 @@ int parse(char *lineptr, char *tokens[])
 
 /* writes the first word of a given line into char *word and replaces the read
  * section of the line with blank */
-static int getword(char *word, char *lineptr, int lim)
+static int getword(char *word, char *cmd, int lim)
+// TODO:
+// I can modify this to detect | and take them as seperate tokens but
+// I would need a buffer system for that I think
 {
-    char *c = lineptr;
+    char *c = cmd;
     int i = 0;
 
-    if (lineptr == NULL)
+    if (cmd == NULL)
         return -1;
 
     while (isspace(*c))
@@ -54,10 +72,28 @@ static int getword(char *word, char *lineptr, int lim)
 
         // this is so getword skips the already read parts in the next iteration
         // TODO: Find a better way to handle this
-        *(lineptr + i) = ' ';
+        *(cmd + i) = ' ';
     }
 
     *word++ = '\0';
 
     return word[0];
+}
+
+/* returns the position of '|', -1 if not present */
+int check_for_pipe(char *cmd)
+{
+    char *c = cmd;
+    int i;
+
+    if (cmd == NULL)
+        return -1;
+
+    for (i = 0; *(c + i) != '|' && i < strlen(cmd); i++)
+        ;
+
+    if (*c == '|')
+        return i;
+
+    return -1;
 }
