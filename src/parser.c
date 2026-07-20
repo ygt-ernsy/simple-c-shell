@@ -119,7 +119,8 @@ static int getword(char *word, char *cmd, int lim)
     if (*c == '\0' || *c == '\n')
         return -1;
 
-    for (; isalnum(*c) && lim-- > 0; c++, i++)
+    // added to prevent core dumps when a command contains a punct
+    for (; (ispunct(*c) || isalnum(*c)) && lim-- > 0; c++, i++)
     {
         *word++ = *c; // NOTE: Is this safe?
 
