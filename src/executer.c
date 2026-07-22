@@ -5,12 +5,12 @@
 /* executes the given parsed command, the first argument is the number of tokens
  * in the command */
 int execute(const int argc, char *const tokens[])
+// TODO: Impelement waiting for the child process
 {
     // step1: fork the current process
     // step2: if 0 (child) execvp the given command with the given arguments
     // step3: if parent ?
 
-    char *name = tokens[0];
     char *args[argc];
 
     // I probably don't need to copy the given array to make it null terminated

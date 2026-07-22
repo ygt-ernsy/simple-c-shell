@@ -6,6 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO: The new split_pipe_cmd works but I can't create enough arrays for every
+// command block even though split_pipe_cmd returns the num of commands, so I
+// thought about making the command a struct which has a char *cmd and a
+// char **tokens. This way I think I can create a function for creating commands
+// so I can use a for loop for parsing and creating commands
+
 /* parses a given line and puts the individual words into a given char* array */
 int parse(char *cmd, char *tokens[])
 {
