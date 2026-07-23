@@ -3,11 +3,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-/* executes the given parsed command, the first argument is the number of tokens
- * in the command */
+/*
+ * executes the given parsed command, the first argument is the number of tokens
+ * in the command
+ * */
 int execute(const int argc, char *const tokens[])
 // NOTE: should this function take in a command struct as an argument
-// TODO: Impelement waiting for the child process
 {
     char *args[argc];
 
@@ -21,22 +22,32 @@ int execute(const int argc, char *const tokens[])
     args[argc - 1] = NULL;
 
     int pid = fork();
-
     if (pid < 0)
     {
-        printf("something went wrong when forking\n"); // This or perror?
+        perror("fork"); // This or perror?
         return -1;
     }
 
     if (pid > 0)
     { // parent
-        wait(&pid);
+        int status;
+        int w = waitpid(pid, &status, 0);
+        if (w < 0)
+        {
+            perror("waitpid");
+            return -1; // NOTE: should I use exit() here?
+        }
+        // NOTE: should I return the status here?
     }
     else if (pid == 0) // child
     {
         // NOTE: is this the way I should do this?
-        if (execvp(tokens[0], args) < 0)
+        int e = execvp(tokens[0], args);
+        if (e < 0)
+        {
             perror("ERROR: execvp");
+            return -1; // NOTE: should I use exit here?
+        }
     }
 
     return 1;
