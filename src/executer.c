@@ -1,20 +1,17 @@
 #include "executer.h"
 #include <stdio.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 /* executes the given parsed command, the first argument is the number of tokens
  * in the command */
 int execute(const int argc, char *const tokens[])
+// NOTE: should this function take in a command struct as an argument
 // TODO: Impelement waiting for the child process
 {
-    // step1: fork the current process
-    // step2: if 0 (child) execvp the given command with the given arguments
-    // step3: if parent ?
-
     char *args[argc];
 
     // I probably don't need to copy the given array to make it null terminated
-    // TODO: Find a better way
     for (int i = 0; i < argc - 1; i++)
     {
         args[i] = tokens[i];
@@ -25,17 +22,21 @@ int execute(const int argc, char *const tokens[])
 
     int pid = fork();
 
-    if (pid == 0) // child
+    if (pid < 0)
+    {
+        printf("something went wrong when forking\n"); // This or perror?
+        return -1;
+    }
+
+    if (pid > 0)
+    { // parent
+        wait(&pid);
+    }
+    else if (pid == 0) // child
     {
         // NOTE: is this the way I should do this?
-        if (execvp(tokens[0], args) < 0) // this is not executing
+        if (execvp(tokens[0], args) < 0)
             perror("ERROR: execvp");
-    }
-    else if (pid < 0)
-    {
-        // NOTE: should I use perror?
-        printf("something went wrong when forking\n");
-        return -1;
     }
 
     return 1;
