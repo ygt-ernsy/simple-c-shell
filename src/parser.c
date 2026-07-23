@@ -136,7 +136,9 @@ int check_for_pipe(char *cmd)
         return -1;
     }
 
-    for (i = 0; *c != '|' && i < strlen(cmd); c++, i++)
+    int len = strlen(cmd);
+
+    for (i = 0; *c != '|' && i < len; c++, i++)
         ;
 
     if (*c == '|')
