@@ -11,7 +11,6 @@ int parse(char *cmd, char *tokens[])
 {
     char word[BUFSIZ];
     int i = 0;
-    char c;
 
     // TODO: is BUFSIZ correct way?
     while (getword(word, cmd, BUFSIZ) >= 0)
