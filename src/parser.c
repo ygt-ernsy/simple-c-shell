@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int getword(char *word, char *cmd, int lim);
+static int check_for_pipe(char *cmd);
+
 // TODO: The new split_pipe_cmd works but I can't create enough arrays for every
 // command block even though split_pipe_cmd returns the num of commands, so I
 // thought about making the command a struct which has a char *cmd and a
