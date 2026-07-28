@@ -4,8 +4,11 @@
 #include <unistd.h>
 
 /*
- * executes the given parsed command, the first argument is the number of tokens
- * in the command
+ * executes the given parsed command,
+ * the first argument is the number of tokens in the command
+ * returns the return value of the executed command if successfull
+ * returns -1 if there was an error and 1 if the child process did not return
+ * for some reason
  * */
 int execute(const int argc, char *const tokens[])
 // NOTE: should this function take in a command struct as an argument
@@ -38,6 +41,7 @@ int execute(const int argc, char *const tokens[])
             return -1; // NOTE: should I use exit() here?
         }
         // NOTE: should I return the status here?
+        return status;
     }
     else if (pid == 0) // child
     {
@@ -45,7 +49,7 @@ int execute(const int argc, char *const tokens[])
         int e = execvp(tokens[0], args);
         if (e < 0)
         {
-            perror("ERROR: execvp");
+            perror("execvp");
             return -1; // NOTE: should I use exit here?
         }
     }
