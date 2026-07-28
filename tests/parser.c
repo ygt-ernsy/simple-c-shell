@@ -1,4 +1,5 @@
 #include "../src/parser.h"
+#include "test.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,21 +8,9 @@
 int tests_run = 0;
 int tests_failed = 0;
 
-#define TEST_ASSERT(message, test)                                             \
-    if (!test)                                                                 \
-    {                                                                          \
-        printf("[FAILED] %s\n", message);                                      \
-        tests_failed++;                                                        \
-    }                                                                          \
-    else                                                                       \
-    {                                                                          \
-        printf("[PASSED] %s \n", message);                                     \
-    }                                                                          \
-    tests_run++;
-
 /* TEST CASES */
 
-int test_tokens(void)
+void test_tokens(void)
 {
     printf("Testing token output\n");
 
@@ -33,13 +22,13 @@ int test_tokens(void)
 
     parse(line, tokens);
 
-    TEST_ASSERT("First token should be 'this'\n", strcmp("this", tokens[0]) == 0);
-    TEST_ASSERT("Second token should be 'is'\n", strcmp("is", tokens[1]) == 0);
-    TEST_ASSERT("Third token should be 'a'\n", strcmp("a", tokens[2]) == 0);
-    TEST_ASSERT("Third token should be 'test'\n", strcmp("test", tokens[3]) == 0);
+    TEST_ASSERT("First token should be 'this'\n", (strcmp("this", tokens[0]) == 0));
+    TEST_ASSERT("Second token should be 'is'\n", (strcmp("is", tokens[1]) == 0));
+    TEST_ASSERT("Third token should be 'a'\n", (strcmp("a", tokens[2]) == 0));
+    TEST_ASSERT("Third token should be 'test'\n", (strcmp("test", tokens[3]) == 0));
 }
 
-int test_cmd_with_one_pipe(void) {
+void test_cmd_with_one_pipe(void) {
     printf("Testing token output with pipes\n");
 
     char *cmds[BUFSIZ];
@@ -50,21 +39,21 @@ int test_cmd_with_one_pipe(void) {
 
     strlcpy(line, "this is a test|with pipe\n", size);
 
-    int num = split_pipe_cmd(line, cmds);
+    split_pipe_cmd(line, cmds);
 
     parse(cmds[0], tokens1);
     parse(cmds[1], tokens2);
 
-    TEST_ASSERT("First token should be 'this'\n", strcmp("this", tokens1[0]) == 0);
-    TEST_ASSERT("Second token should be 'is'\n", strcmp("is", tokens1[1]) == 0);
-    TEST_ASSERT("Third token should be 'a'\n", strcmp("a", tokens1[2]) == 0);
-    TEST_ASSERT("Third token should be 'test'\n", strcmp("test", tokens1[3]) == 0);
+    TEST_ASSERT("First token should be 'this'\n", (strcmp("this", tokens1[0]) == 0));
+    TEST_ASSERT("Second token should be 'is'\n", (strcmp("is", tokens1[1]) == 0));
+    TEST_ASSERT("Third token should be 'a'\n", (strcmp("a", tokens1[2]) == 0));
+    TEST_ASSERT("Third token should be 'test'\n", (strcmp("test", tokens1[3]) == 0));
 
-    TEST_ASSERT("First token should be 'with'\n", strcmp("with", tokens2[0]) == 0);
-    TEST_ASSERT("Second token should be 'pipe'\n", strcmp("pipe", tokens2[1]) == 0);
+    TEST_ASSERT("First token should be 'with'\n", (strcmp("with", tokens2[0]) == 0));
+    TEST_ASSERT("Second token should be 'pipe'\n", (strcmp("pipe", tokens2[1]) == 0));
 }
 
-int test_cmd_with_multiple_pipes(void) {
+void test_cmd_with_multiple_pipes(void) {
     printf("Testing token output with multiple pipes\n");
 
     char *cmds[BUFSIZ];
@@ -77,28 +66,28 @@ int test_cmd_with_multiple_pipes(void) {
 
     strlcpy(line, "this is a test|with| multiple| pipes\n", size);
 
-    int num = split_pipe_cmd(line, cmds);
+    split_pipe_cmd(line, cmds);
 
     parse(cmds[0], tokens1);
     parse(cmds[1], tokens2);
     parse(cmds[2], tokens3);
     parse(cmds[3], tokens4);
 
-    TEST_ASSERT("First token should be 'this'\n", strcmp("this", tokens1[0]) == 0);
-    TEST_ASSERT("Second token should be 'is'\n", strcmp("is", tokens1[1]) == 0);
-    TEST_ASSERT("Third token should be 'a'\n", strcmp("a", tokens1[2]) == 0);
-    TEST_ASSERT("Third token should be 'test'\n", strcmp("test", tokens1[3]) == 0);
+    TEST_ASSERT("First token should be 'this'\n", (strcmp("this", tokens1[0]) == 0));
+    TEST_ASSERT("Second token should be 'is'\n", (strcmp("is", tokens1[1]) == 0));
+    TEST_ASSERT("Third token should be 'a'\n", (strcmp("a", tokens1[2]) == 0));
+    TEST_ASSERT("Third token should be 'test'\n", (strcmp("test", tokens1[3]) == 0));
 
-    TEST_ASSERT("First token should be 'with'\n", strcmp("with", tokens2[0]) == 0);
+    TEST_ASSERT("First token should be 'with'\n", (strcmp("with", tokens2[0]) == 0));
 
-    TEST_ASSERT("First token should be 'multiple'\n", strcmp("multiple", tokens3[0]) == 0);
+    TEST_ASSERT("First token should be 'multiple'\n", (strcmp("multiple", tokens3[0]) == 0));
 
-    TEST_ASSERT("First token should be 'pipes'\n", strcmp("pipes", tokens4[0]) == 0);
+    TEST_ASSERT("First token should be 'pipes'\n", (strcmp("pipes", tokens4[0]) == 0));
 
 }
 
 /* MAIN */
-int main(int argc, char *argv[])
+int main()
 {
     printf("----STARTING TESTS----\n");
 
