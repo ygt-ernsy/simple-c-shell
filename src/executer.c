@@ -1,5 +1,6 @@
 #include "executer.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -20,22 +21,22 @@
 int execute(const int argc, char *const tokens[], int infd, int outfd)
 // NOTE: should this function take in a command struct as an argument
 {
-    char *args[argc];
+    char *args[argc + 1];
 
     // I probably don't need to copy the given array to make it null terminated
-    for (int i = 0; i < argc - 1; i++)
+    for (int i = 0; i < argc; i++)
     {
         args[i] = tokens[i];
     }
 
     // Null terminate the array
-    args[argc - 1] = NULL;
+    args[argc] = NULL;
 
     int pid = fork();
     if (pid < 0)
     {
         perror("fork");
-        return -1;
+        exit(-1);
     }
 
     if (pid > 0)
@@ -45,7 +46,7 @@ int execute(const int argc, char *const tokens[], int infd, int outfd)
         if (w < 0)
         {
             perror("waitpid");
-            return -1; // NOTE: should I use exit() here?
+            exit(-1); // NOTE: should I use exit() here?
         }
         // NOTE: should I return the status here?
         return status;
@@ -55,18 +56,12 @@ int execute(const int argc, char *const tokens[], int infd, int outfd)
         dup2(infd, STDIN_FILENO);   // make stdin infd
         dup2(outfd, STDOUT_FILENO); // make stdout outfd
 
-        // closing the now unneeded fds
-        if (infd != STDIN_FILENO)
-            close(infd);
-        if (infd != STDOUT_FILENO)
-            close(outfd);
-
         // NOTE: is this the way I should do this?
         int e = execvp(tokens[0], args);
         if (e < 0)
         {
             perror("execvp");
-            return -1; // NOTE: should I use exit here?
+            exit(-1); // NOTE: should I use exit here?
         }
     }
 
