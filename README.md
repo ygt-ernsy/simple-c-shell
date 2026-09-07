@@ -1,2 +1,2 @@
-# DASH
-DASH the Dead Again Shell
+# SIMPLE-C-SHELL
+A simple shell implementation written in C.
