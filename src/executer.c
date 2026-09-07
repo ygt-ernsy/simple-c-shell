@@ -49,12 +49,23 @@ int execute(const int argc, char *const tokens[], int infd, int outfd)
             exit(-1); // NOTE: should I use exit() here?
         }
         // NOTE: should I return the status here?
+
+        if (infd != STDIN_FILENO)
+            close(infd);
+        if (outfd != STDOUT_FILENO)
+            close(outfd);
+
         return status;
     }
     else if (pid == 0) // child
     {
         dup2(infd, STDIN_FILENO);   // make stdin infd
         dup2(outfd, STDOUT_FILENO); // make stdout outfd
+
+        if (infd != STDIN_FILENO)
+            close(infd);
+        if (outfd != STDOUT_FILENO)
+            close(outfd);
 
         // NOTE: is this the way I should do this?
         int e = execvp(tokens[0], args);
