@@ -15,7 +15,8 @@ static int check_for_pipe(char *cmd);
 // char **tokens. This way I think I can create a function for creating commands
 // so I can use a for loop for parsing and creating commands
 
-/* parses a given line and puts the individual words into a given char* array */
+/* parses a given line and puts the individual words into a given char* array
+ * returns the number of tokens */
 int parse(char *cmd, char *tokens[])
 {
     char word[BUFSIZ];
@@ -33,7 +34,7 @@ int parse(char *cmd, char *tokens[])
         tokens[i++] = token;
     }
 
-    return 1;
+    return i;
 }
 
 /* takes a cmd with pipes and splits it to commands and puts them into char*
