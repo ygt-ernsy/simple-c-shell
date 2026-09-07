@@ -10,7 +10,7 @@ void test_executing_command(void)
 
     char *const command[] = {"echo", "test_executing_command"};
 
-    int status = execute(2, command);
+    int status = execute(2, command, 0, 1);
 
     // NOTE: I don't know if this is how I should do things
     TEST_ASSERT("The returned value should be 0\n", (status == 0));
